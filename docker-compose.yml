@@ -1,0 +1,31 @@
+version: '3.4'
+
+services:
+    customerdb:
+        image: postgres
+
+    productdb:
+        image: postgres
+ 
+    walletdb:
+        image: postgres
+
+    customer.api:
+        image: ${DOCKER_REGISTRY-}customerapi
+        build:
+            context: .
+            dockerfile: Customer/Customer.API/Dockerfile
+
+    product.api:
+        image: ${DOCKER_REGISTRY-}productapi
+        build:
+            context: .
+            dockerfile: Product/Product.API/Dockerfile
+
+
+    wallet.api:
+        image: ${DOCKER_REGISTRY-}walletapi
+        build:
+            context: .
+            dockerfile: Wallet/Wallet.API/Dockerfile
+

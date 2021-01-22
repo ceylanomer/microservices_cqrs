@@ -1,0 +1,79 @@
+version: '3.4'
+
+services:
+    #customerdb created without data files, environment is written as hardcoded
+    customerdb:
+        container_name: customerdb
+        image: postgres
+        restart: always
+        environment:
+            POSTGRES_PASSWORD: Sa123456
+            POSTGRES_DB: postgres #if you don't add POSTGRES_DB, default db name id created with username
+            POSTGRES_USER: postgres
+        ports:
+            - 5100:5432
+        network_mode: bridge
+
+    productdb:
+        container_name: productdb 
+        image: postgres
+        restart: always
+        env_file:
+            #https://docs.docker.com/compose/env-file/
+            - database.env #productdb is created with env_file, env information is saved in database.env file.
+        ports:
+            - 5101:5432
+        volumes:
+            #productdb is created with database files in local environment
+            #in restard, data stored as before run
+            - ./postgres-data2:/var/lib/postgresql/data 
+        network_mode: bridge
+    #walletdb is created with password, no username no dbname
+    walletdb:
+        container_name: walletdb 
+        image: postgres
+        restart: always
+        environment:
+            POSTGRES_PASSWORD: Sa123456 #username and dbname are created default
+        ports:
+            - 5102:5432
+        volumes:
+            - ./postgres-data3:/var/lib/postgresql/data
+        network_mode: bridge
+
+    customer.api:
+        container_name: customerapi
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Development
+        depends_on:
+            - customerdb
+        volumes:
+            - ${HOME}/.microsoft/usersecrets/:/root/.microsoft/usersecrets
+            - ${HOME}/.aspnet/https:/root/.aspnet/https
+        ports:
+            - "8000:80"
+
+    product.api:
+        container_name: productapi
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Development
+        depends_on:
+            - productdb
+        volumes:
+            - ${HOME}/.microsoft/usersecrets/:/root/.microsoft/usersecrets
+            - ${HOME}/.aspnet/https:/root/.aspnet/https
+        ports:
+            - "8001:80"
+
+    wallet.api:
+        container_name: walletapi
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Development
+        depends_on:
+            - walletdb
+        volumes:
+            - ${HOME}/.microsoft/usersecrets/:/root/.microsoft/usersecrets
+            - ${HOME}/.aspnet/https:/root/.aspnet/https
+        ports:
+            - "8002:80"
+
