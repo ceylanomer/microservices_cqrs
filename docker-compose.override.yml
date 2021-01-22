@@ -23,10 +23,10 @@ services:
             - database.env #productdb is created with env_file, env information is saved in database.env file.
         ports:
             - 5101:5432
-        volumes:
+        #volumes:
+            #- ./postgres-data2:/var/lib/postgresql/data 
             #productdb is created with database files in local environment
             #in restard, data stored as before run
-            - ./postgres-data2:/var/lib/postgresql/data 
         network_mode: bridge
     #walletdb is created with password, no username no dbname
     walletdb:
@@ -37,8 +37,8 @@ services:
             POSTGRES_PASSWORD: Sa123456 #username and dbname are created default
         ports:
             - 5102:5432
-        volumes:
-            - ./postgres-data3:/var/lib/postgresql/data
+        #volumes:
+            #- ./postgres-data3:/var/lib/postgresql/data
         network_mode: bridge
 
     customer.api:
