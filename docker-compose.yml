@@ -28,4 +28,3 @@ services:
         build:
             context: .
             dockerfile: Wallet/Wallet.API/Dockerfile
-
