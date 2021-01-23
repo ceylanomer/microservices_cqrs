@@ -12,7 +12,9 @@ services:
             POSTGRES_USER: postgres
         ports:
             - 5100:5432
-        network_mode: bridge
+        volumes:
+            - ./postgres-data1:/var/lib/postgresql/data 
+        #network_mode: bridge
 
     productdb:
         container_name: productdb 
@@ -27,7 +29,8 @@ services:
             #- ./postgres-data2:/var/lib/postgresql/data 
             #productdb is created with database files in local environment
             #in restard, data stored as before run
-        network_mode: bridge
+        #network_mode: bridge
+        
     #walletdb is created with password, no username no dbname
     walletdb:
         container_name: walletdb 
@@ -39,12 +42,13 @@ services:
             - 5102:5432
         #volumes:
             #- ./postgres-data3:/var/lib/postgresql/data
-        network_mode: bridge
+        #network_mode: bridge
 
     customer.api:
         container_name: customerapi
         environment:
             - ASPNETCORE_ENVIRONMENT=Development
+            - "ConnectionStrings:CustomerConnection=host=host.docker.internal;port=5100;database=CustomerDB;username=postgres;password=Sa123456"
         depends_on:
             - customerdb
         volumes:
@@ -76,4 +80,3 @@ services:
             - ${HOME}/.aspnet/https:/root/.aspnet/https
         ports:
             - "8002:80"
-
